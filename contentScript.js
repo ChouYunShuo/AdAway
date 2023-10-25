@@ -26,7 +26,7 @@ const staticAds = [
   "yt-mealbar-promo-renderer",
 ];
 
-class YouTubeAdsSkipper {
+class YouTubeAdAway {
   constructor() {
     this.observer = null;
     this.youtubePlayer = null;
@@ -39,13 +39,17 @@ class YouTubeAdsSkipper {
     return document.querySelector(".video-stream");
   }
 
+  /**
+   * Checks for an ad overlay on the YouTube video and skips it if found.
+   */
   checkForAdOverlay() {
-    const adOverlay = document.querySelector(".ytp-ad-player-overlay");
-    const adSurvey = document.querySelector(".ytp-ad-survey")?.length > 0;
     if (!this.youtubePlayer) {
       this.youtubePlayer = this.getYouTubePlayer();
     }
-    if (adOverlay) {
+    const adOverlay = document.querySelector(".ytp-ad-player-overlay");
+    const adSurvey = !!document.querySelector(".ytp-ad-survey");
+
+    if (adOverlay || adSurvey) {
       this.youtubePlayer.currentTime = this.youtubePlayer.duration - 0.1;
       this.youtubePlayer.paused && this.youtubePlayer.play();
       document
@@ -58,20 +62,13 @@ class YouTubeAdsSkipper {
           console.log(`Skipped Ad count updated to ${updatedCount}`);
         }
       );
-    } else if (adSurvey) {
-      document
-        .querySelectorAll('[class*="ytp-ad-skip-button"]')
-        .forEach((button) => button.click());
-
-      chrome.runtime.sendMessage(
-        { action: "incrementCounter" },
-        (updatedCount) => {
-          console.log(`Skipped Ad count updated to ${updatedCount}`);
-        }
-      );
     }
   }
 
+  /**
+   * Callback for handling DOM mutations.
+   * @param {MutationRecord[]} mutationsList - The list of DOM mutations
+   */
   mutationCallback = (mutationsList) => {
     for (let mutation of mutationsList) {
       if (mutation.type === "childList") {
@@ -79,7 +76,9 @@ class YouTubeAdsSkipper {
       }
     }
   };
-
+  /**
+   * Observes DOM changes to detect overlay ads.
+   */
   ObserverOverlayAds() {
     const intervalId = setInterval(() => {
       const targetNode = document.querySelector(".video-ads");
@@ -91,6 +90,9 @@ class YouTubeAdsSkipper {
     }, 1000);
   }
 
+  /**
+   * Stops observing DOM changes.
+   */
   stopObservingDOMChanges() {
     if (this.observer) {
       this.observer.disconnect();
@@ -98,6 +100,10 @@ class YouTubeAdsSkipper {
     }
   }
 
+  /**
+   * Sets the auto skip functionality based on the provided value.
+   * @param {boolean} autoSkip - Determines if ads should be auto skipped
+   */
   setAutoSkip(autoSkip) {
     if (autoSkip) {
       this.checkForAdOverlay();
@@ -107,15 +113,21 @@ class YouTubeAdsSkipper {
     }
   }
 
-  blockStatic() {
-    console.log("blockStatic");
-    setTimeout(() => {
-      staticAds.forEach((ad) => {
-        this.hideElementsBySelector(ad);
+  /**
+   * Blocks static ads based on predefined selectors.
+   */
+  blockStaticAds() {
+    staticAds.forEach((adSelector) => {
+      const adElements = document.querySelectorAll(adSelector);
+      adElements.forEach((adElement) => {
+        adElement.style.display = "none";
       });
-    }, 0);
+    });
   }
 
+  /**
+   * Set display to none to hide static Ads
+   */
   hideElementsBySelector(selector) {
     const elements = document.querySelectorAll(selector);
     elements.forEach((element) => {
@@ -123,25 +135,32 @@ class YouTubeAdsSkipper {
     });
   }
 
+  /**
+   * Initializes keydown event listener to manually skip ads.
+   */
   async initEvents() {
     document.addEventListener("keydown", (event) => {
-      if (
-        event.target.nodeName === "INPUT" ||
-        event.target.nodeName === "TEXTAREA" ||
-        event.target.isContentEditable
-      ) {
-        return false;
-      }
-      if (event.key === "q") {
-        this.checkForAdOverlay(); // skip ads
+      const isEditable =
+        ["INPUT", "TEXTAREA"].includes(event.target.nodeName) ||
+        event.target.isContentEditable;
+      if (!isEditable && event.key === "q") {
+        this.checkForAdOverlay();
       }
     });
   }
+
+  /**
+   * Initializes auto skip functionality based on stored settings.
+   */
   async initAutoSkip() {
     chrome.storage.local.get(["autoSkip"], (data) => {
       this.setAutoSkip(data.autoSkip);
     });
   }
+
+  /**
+   * Initializes message listener for runtime communications.
+   */
   async initMessaging() {
     chrome.runtime.onMessage.addListener((obj, sender, response) => {
       const { type, value } = obj;
@@ -151,21 +170,20 @@ class YouTubeAdsSkipper {
     });
   }
 
+  /**
+   * Initializes the YouTube Ads Skipper.
+   */
   async initialize() {
     await this.initEvents();
     await this.initMessaging();
     await this.initAutoSkip();
     this.youtubePlayer = this.getYouTubePlayer();
-    this.observer = new MutationObserver(this.mutationCallback);
 
-    setTimeout(() => {
-      this.blockStatic();
-
-      setInterval(() => {
-        this.blockStatic();
-      }, 5000);
-    }, 1000);
+    setTimeout(this.blockStaticAds, 1000);
+    setInterval(this.blockStaticAds, 5000);
+    this.ObserverOverlayAds();
   }
 }
 
-(() => new YouTubeAdsSkipper())();
+// Creating an instance of YouTubeAdAway to start the functionality
+(() => new YouTubeAdAway())();
