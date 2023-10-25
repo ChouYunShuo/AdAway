@@ -87,7 +87,7 @@ class YouTubeAdAway {
         this.observer = new MutationObserver(this.mutationCallback);
         this.observer.observe(targetNode, this.config);
       }
-    }, 1000);
+    }, 200);
   }
 
   /**
@@ -106,7 +106,6 @@ class YouTubeAdAway {
    */
   setAutoSkip(autoSkip) {
     if (autoSkip) {
-      this.checkForAdOverlay();
       this.ObserverOverlayAds();
     } else {
       this.stopObservingDOMChanges();
