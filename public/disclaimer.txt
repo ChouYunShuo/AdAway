@@ -1,0 +1,7 @@
+This software, named "YouTube AdAway," is distributed solely for educational purposes and is provided as it stands, without any form of warranty. This disclaimer explicitly excludes all implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement of intellectual property rights.
+
+The authors or copyright holders of "YouTube AdAway" shall not be held liable under any circumstances, whether in a contract, tort, or any other legal theory, for any claims, damages, or other liabilities that may arise from, out of, or in connection with the use of the software or any other dealings associated with it.
+
+By using "YouTube AdAway," users acknowledge and accept that they bear all risks associated with its use, understanding that the software is provided without warranties and that the developers are not liable for any potential issues that may arise.
+
+This statement is intended to legally protect the developers of "YouTube AdAway," ensuring that users are aware of the terms and conditions associated with the software's use, and acknowledging that they are responsible for any risks involved.

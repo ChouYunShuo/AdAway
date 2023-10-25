@@ -1,0 +1,27 @@
+{
+    "name": "AdAway - Undetectable AdBlocker for YouTube",
+    "version": "0.1.0",
+    "description": "Skip ads in YT videos",
+    "permissions": ["storage", "tabs"],
+    "host_permissions": ["https://*.youtube.com/*"],
+    "icons": {
+        "128": "assets/icon.png"
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://*.youtube.com/*"],
+        "js": ["contentScript.js"]
+      }
+    ],
+    "action": {
+      "default_icon": {
+        "128": "assets/icon.png"
+      },
+      "default_title": "Undetectable YT Video Ads Skipper",
+      "default_popup": "popup.html"
+    },
+    "manifest_version": 3
+}
