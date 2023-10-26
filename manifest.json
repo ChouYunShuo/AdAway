@@ -1,7 +1,7 @@
 {
-    "name": "AdAway - Undetectable AdBlocker for YouTube",
+    "name": "YouTube AdAway - We skip, not block ads",
     "version": "0.1.0",
-    "description": "Skip ads in YT videos",
+    "description": "We make your YouTube watching smoother while still supporting the creators we all love.",
     "permissions": ["storage", "tabs"],
     "host_permissions": ["https://*.youtube.com/*"],
     "icons": {
