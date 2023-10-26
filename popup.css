@@ -1,5 +1,5 @@
 .container {
-  width: 280px;
+  width: 260px;
   color: #314d3e;
 }
 .title {
@@ -7,7 +7,10 @@
   font-weight: bold;
   padding: 8px;
 }
-
+.body-text {
+  padding-left: 8px;
+  padding-bottom: 4px;
+}
 .activate-btn-container {
   display: flex;
   align-items: center;

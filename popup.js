@@ -15,7 +15,7 @@ const createCntElement = (isActive = false) => {
 
 const createActivateButton = (container) => {
   const descriptionElement = document.createElement("span");
-  descriptionElement.textContent = "Activate the autoSkipper: ";
+  descriptionElement.textContent = "Activate the auto skipper ";
   descriptionElement.className = "activate-desc";
 
   const labelElement = document.createElement("label");
