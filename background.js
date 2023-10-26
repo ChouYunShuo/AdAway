@@ -57,4 +57,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.storage.local.set({ autoSkip: message.autoSkip });
     // Assuming no response is needed for this message
   }
+  sendResponse({ status: "Received" });
 });

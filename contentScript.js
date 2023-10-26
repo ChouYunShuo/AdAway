@@ -180,7 +180,6 @@ class YouTubeAdAway {
 
     setTimeout(this.blockStaticAds, 1000);
     setInterval(this.blockStaticAds, 5000);
-    this.ObserverOverlayAds();
   }
 }
 

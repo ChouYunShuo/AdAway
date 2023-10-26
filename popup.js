@@ -37,36 +37,38 @@ const createActivateButton = (container) => {
 
 const handleToggle = async (e) => {
   const autoSkip = e.target.checked;
+  chrome.runtime.sendMessage(
+    {
+      action: "updateAutoToggle",
+      autoSkip: autoSkip,
+    },
+    function (response) {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message);
+      } else {
+        console.log(response.status);
+      }
+    }
+  );
+
   const activeTab = await getActiveTabURL();
-  chrome.runtime.sendMessage({
-    action: "updateAutoToggle",
-    autoSkip: autoSkip,
-  });
-  chrome.tabs.sendMessage(activeTab.id, {
-    type: "checkAutoSkip",
-    value: autoSkip,
-  });
+  if (activeTab.url.includes("youtube.com/watch")) {
+    chrome.tabs.sendMessage(activeTab.id, {
+      type: "checkAutoSkip",
+      value: autoSkip,
+    });
+  }
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const activeTab = await getActiveTabURL();
-  const queryParameters = activeTab.url.split("?")[1];
-  const urlParameters = new URLSearchParams(queryParameters);
-
-  const currentVideo = urlParameters.get("v");
-
-  if (activeTab.url.includes("youtube.com/watch") && currentVideo) {
-    const container = document.querySelector(".activate-btn-container");
-    container.innerHTML = "";
-    if (container) {
-      createCntElement(true);
-      createActivateButton(container);
-      const toggle = document.getElementById("autoSkipToggle");
-      chrome.storage.local.get(["autoSkip"], function (data) {
-        toggle.checked = data.autoSkip;
-      });
-    }
-  } else {
-    createCntElement();
+  const container = document.querySelector(".activate-btn-container");
+  container.innerHTML = "";
+  if (container) {
+    createCntElement(true);
+    createActivateButton(container);
+    const toggle = document.getElementById("autoSkipToggle");
+    chrome.storage.local.get(["autoSkip"], function (data) {
+      toggle.checked = data.autoSkip;
+    });
   }
 });
