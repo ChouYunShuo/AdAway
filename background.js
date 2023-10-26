@@ -18,7 +18,7 @@ function debounce(func, delay) {
  */
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
-    chrome.storage.local.set({ skippedCnt: 0, autoSkip: false }, () => {
+    chrome.storage.local.set({ skippedCnt: 0, autoSkip: true }, () => {
       if (chrome.runtime.lastError) {
         console.error("Error initializing data:", chrome.runtime.lastError);
       } else {
